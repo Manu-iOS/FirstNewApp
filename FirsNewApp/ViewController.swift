@@ -28,32 +28,33 @@ class ViewController: UIViewController {
     }
 
     @IBAction func sliderChanged(_ sender: UISlider) {
-        // slider의 벨류값을 가지고 main lable의 text를 setting
-        // 1초씩 지나갈때마다 무언가를 실행
-        let seconds = Int(slider.value * 60)
-        mainLabel.text = "\(seconds) 초"
-        number = seconds
-    }
-    
-    
+            // slider의 벨류값을 가지고 main lable의 text를 setting
+            // 1초씩 지나갈때마다 언가를 실행
+            number = Int(sender.value * 60)
+            mainLabel.text = "\(number) 초"
+        }
+        
+        
     @IBAction func startButtonTapped(_ sender: UIButton) {
         // 지정한 초에서 1초씩 감소되는 기능
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in // [self] 를 사용하면 밑에서 코드(클로저 안에)를 작성할때 self를 붙여주지 않아도 된다.
-            // do something here
-            // 반복을 하고 싶은 코드
-            
-            if number > 0 {
-                number -= 1 //  weak self 라고 선언이 돼어있으면 self? 해야한다.
-                slider.value = Float(number) / Float(60)// 숫자를 개산해줘야함
-                mainLabel.text = "\(number)"
-            } else { // number가 0 보다 작으면 소리나게
-                number = 0
-                mainLabel.text = "초를 선택해야한다."
-                timer?.invalidate()
-                AudioServicesPlayAlertSound(SystemSoundID(1322))
-            }
-           
+        timer?.invalidate() // 기존에 timer이 실행되고있으면 비활성화
+        
+        timer =  Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(doSomethingAfter1Second), userInfo: nil, repeats: true)
+    
+    }
+    
+    // Timer.scheduledTimer() 함수와 연결이 돼서 1초마다 반복 실행된다.
+    @objc func doSomethingAfter1Second() {
+        // 반복을 하고 싶은 코드
+        if number > 0 {
+            number -= 1 //  weak self 라고 선언이 돼어있으면 self? 해야한다.
+            slider.value = Float(number) / Float(60)// 숫자를 개산해줘야함
+            mainLabel.text = "\(number)"
+        } else { // number가 0 보다 작으면 소리나게
+            number = 0
+            mainLabel.text = "초를 선택해야한다."
+            timer?.invalidate()
+            AudioServicesPlayAlertSound(SystemSoundID(1322))
         }
     }
     
